@@ -7,9 +7,17 @@ export interface PersonalizedContent {
   blessing: string;
 }
 
+/**
+ * 安全獲取 API Key，防止 ReferenceError: process is not defined
+ */
 const getApiKey = () => {
   try {
-    return process.env.API_KEY || "";
+    // @ts-ignore
+    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+      // @ts-ignore
+      return process.env.API_KEY;
+    }
+    return "";
   } catch (e) {
     return "";
   }
@@ -24,7 +32,7 @@ export const generatePersonalizedResult = async (spiritType: SpiritType, choices
   };
 
   if (!apiKey) {
-    console.warn("Gemini API Key is not configured. Returning fallback content.");
+    console.warn("API Key is missing, using fallback content.");
     return fallbackContent;
   }
 
@@ -43,12 +51,12 @@ export const generatePersonalizedResult = async (spiritType: SpiritType, choices
       規則：
       - 語氣必須療癒、溫柔。
       - 禁用詞：能量、人格、測驗、靈性、命運、預言、類型、覺醒、覺知。
-      - 格式必須為 JSON。
+      - 格式：JSON。
     `;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: [{ parts: [{ text: promptText }] }],
+      contents: promptText,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -63,7 +71,7 @@ export const generatePersonalizedResult = async (spiritType: SpiritType, choices
     });
     
     const text = response.text;
-    if (!text) throw new Error("AI returned empty text");
+    if (!text) throw new Error("Empty AI response");
     
     const result = JSON.parse(text);
     return {
@@ -71,7 +79,7 @@ export const generatePersonalizedResult = async (spiritType: SpiritType, choices
       blessing: result.blessing || fallbackContent.blessing
     };
   } catch (error) {
-    console.error("AI Generation failed:", error);
+    console.error("AI Content Generation Error:", error);
     return fallbackContent;
   }
 };

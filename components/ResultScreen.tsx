@@ -33,6 +33,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
           setAiContent(content);
         }
       } catch (err) {
+        console.error("Fetch Error:", err);
         if (isMounted) {
           setAiContent({
             feedback: "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。",
@@ -69,20 +70,19 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
                     alt={data.title}
                     className="w-full h-full object-cover transition-opacity duration-700"
                     onLoad={(e) => (e.currentTarget.style.opacity = "1")}
-                    onError={() => {
-                      console.error("Failed to load image at:", data.imageUrl);
+                    onError={(e) => {
+                      console.error("Image load failed:", data.imageUrl);
                       setImgError(true);
                     }}
                     style={{ opacity: 0 }}
                   />
                 ) : (
-                  <div className="text-center p-8 bg-emerald-50 w-full h-full flex flex-col justify-center items-center">
-                    <span className="text-6xl mb-4 block">🌱</span>
-                    <p className="text-xs text-red-800/60 font-sans mb-1">圖片載入失敗</p>
-                    <p className="text-[10px] text-emerald-800/40 break-all font-sans px-4">
-                      路徑: {data.imageUrl}
-                    </p>
-                    <p className="text-[10px] text-emerald-800/40 font-sans mt-2">請確認 GitHub images 資料夾下<br/>是否有 {data.imageUrl.split('/').pop()}</p>
+                  <div className="text-center p-6 bg-emerald-100/50 w-full h-full flex flex-col justify-center items-center space-y-2">
+                    <span className="text-5xl opacity-40">🍃</span>
+                    <p className="text-xs text-emerald-800/60 font-sans">精靈躲起來了...</p>
+                    <div className="bg-white/50 px-3 py-1 rounded text-[10px] text-red-800/40 font-mono break-all">
+                      {data.imageUrl}
+                    </div>
                   </div>
                 )}
               </div>
@@ -101,7 +101,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </h3>
             <div className="text-xl italic text-emerald-800 font-medium leading-relaxed pl-4 border-l-2 border-emerald-200 min-h-[3rem]">
               {loading ? (
-                <span className="opacity-50 animate-pulse">正在聆聽森林的回音...</span>
+                <span className="opacity-30 animate-pulse">正在聆聽森林的回音...</span>
               ) : (
                 `「${aiContent?.feedback || "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。"}」`
               )}
@@ -149,7 +149,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </h3>
             <div className="text-xl font-bold text-emerald-800 tracking-wide min-h-[1.5rem]">
               {loading ? (
-                <span className="opacity-50 animate-pulse">森林正在準備祝福...</span>
+                <span className="opacity-30 animate-pulse">森林正在準備祝福...</span>
               ) : (
                 aiContent?.blessing || "願你的心中始終有一片溫柔的森林，陪著你慢慢生長。"
               )}
