@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新芽小精靈・晨曦之旅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 定義全域標楷體字體集 */
+        body {
+            font-family: "BiauKai", "標楷體", "KaiTi", "Kaiti TC", "Apple LiSung", serif;
+            margin: 0;
+            padding: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        /* 強制所有類別使用標楷體 */
+        h1, h2, h3, h4, p, span, button, div {
+            font-family: "BiauKai", "標楷體", "KaiTi", "Kaiti TC", "Apple LiSung", serif;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="bg-emerald-900 overflow-x-hidden">
+    <div id="root"></div>
+</body>
+</html>
