@@ -24,25 +24,36 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
     const fetchAIResult = async () => {
       setLoading(true);
       try {
         const content = await generatePersonalizedResult(type, choices);
-        setAiContent(content);
+        if (isMounted) {
+          setAiContent(content);
+        }
       } catch (err) {
-        console.error("Failed to fetch AI content", err);
+        console.error("ResultScreen fetch error:", err);
+        if (isMounted) {
+          setAiContent({
+            feedback: "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。",
+            blessing: "願你的心中始終有一片溫柔的森林，陪著你慢慢生長。"
+          });
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
     fetchAIResult();
+    return () => { isMounted = false; };
   }, [type, choices]);
 
   return (
     <div className="flex flex-col items-center animate-fade-in max-w-2xl mx-auto pb-24 px-4">
       
       <div className="w-full bg-[#fdfaf1] text-emerald-900 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.5)] overflow-hidden relative border-y-8 border-emerald-900">
-        
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
         
         <div className="p-10 md:p-14 space-y-10 leading-loose relative z-10">
@@ -65,7 +76,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
                 ) : (
                   <div className="text-center p-8">
                     <span className="text-6xl mb-4 block opacity-50">🌱</span>
-                    <p className="text-xs text-emerald-800/40 italic">精靈正在林間穿梭...<br/>(圖片載入中或路徑需檢查)</p>
+                    <p className="text-xs text-emerald-800/40 italic">精靈正在林間穿梭...<br/>(請確認 GitHub images 資料夾路徑)</p>
                   </div>
                 )}
               </div>
@@ -126,7 +137,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             <h3 className="text-sm font-bold tracking-widest text-emerald-800/40 mb-4 flex items-center justify-center gap-3">
                【新年祝福】
             </h3>
-            <p className="text-xl font-bold text-emerald-800 tracking-wide">
+            <p className="text-xl font-bold text-emerald-800 tracking-wide min-h-[1.5rem]">
               {loading ? "森林正在準備祝福..." : aiContent?.blessing}
             </p>
           </section>
@@ -147,10 +158,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
           結束旅程
         </button>
       </div>
-      
-      <p className="mt-10 text-xs opacity-40 tracking-widest font-light text-center">
-        🌿 旅程是為了讓你遇見自己，學會陪著自己慢慢生長。
-      </p>
     </div>
   );
 };
