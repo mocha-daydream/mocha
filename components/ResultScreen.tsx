@@ -33,7 +33,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
           setAiContent(content);
         }
       } catch (err) {
-        console.error("ResultScreen fetch error:", err);
         if (isMounted) {
           setAiContent({
             feedback: "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。",
@@ -70,13 +69,20 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
                     alt={data.title}
                     className="w-full h-full object-cover transition-opacity duration-700"
                     onLoad={(e) => (e.currentTarget.style.opacity = "1")}
-                    onError={() => setImgError(true)}
+                    onError={() => {
+                      console.error("Failed to load image at:", data.imageUrl);
+                      setImgError(true);
+                    }}
                     style={{ opacity: 0 }}
                   />
                 ) : (
-                  <div className="text-center p-8">
-                    <span className="text-6xl mb-4 block opacity-50">🌱</span>
-                    <p className="text-xs text-emerald-800/40 italic">精靈正在林間穿梭...<br/>(請確認 GitHub images 資料夾路徑)</p>
+                  <div className="text-center p-8 bg-emerald-50 w-full h-full flex flex-col justify-center items-center">
+                    <span className="text-6xl mb-4 block">🌱</span>
+                    <p className="text-xs text-red-800/60 font-sans mb-1">圖片載入失敗</p>
+                    <p className="text-[10px] text-emerald-800/40 break-all font-sans px-4">
+                      路徑: {data.imageUrl}
+                    </p>
+                    <p className="text-[10px] text-emerald-800/40 font-sans mt-2">請確認 GitHub images 資料夾下<br/>是否有 {data.imageUrl.split('/').pop()}</p>
                   </div>
                 )}
               </div>
@@ -93,9 +99,13 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
               <span className="w-8 h-px bg-emerald-800/20"></span>
               【森林的低語】
             </h3>
-            <p className="text-xl italic text-emerald-800 font-medium leading-relaxed pl-4 border-l-2 border-emerald-200 min-h-[3rem]">
-              {loading ? "正在聆聽森林的回音..." : `「${aiContent?.feedback}」`}
-            </p>
+            <div className="text-xl italic text-emerald-800 font-medium leading-relaxed pl-4 border-l-2 border-emerald-200 min-h-[3rem]">
+              {loading ? (
+                <span className="opacity-50 animate-pulse">正在聆聽森林的回音...</span>
+              ) : (
+                `「${aiContent?.feedback || "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。"}」`
+              )}
+            </div>
           </section>
 
           <section>
@@ -137,9 +147,13 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             <h3 className="text-sm font-bold tracking-widest text-emerald-800/40 mb-4 flex items-center justify-center gap-3">
                【新年祝福】
             </h3>
-            <p className="text-xl font-bold text-emerald-800 tracking-wide min-h-[1.5rem]">
-              {loading ? "森林正在準備祝福..." : aiContent?.blessing}
-            </p>
+            <div className="text-xl font-bold text-emerald-800 tracking-wide min-h-[1.5rem]">
+              {loading ? (
+                <span className="opacity-50 animate-pulse">森林正在準備祝福...</span>
+              ) : (
+                aiContent?.blessing || "願你的心中始終有一片溫柔的森林，陪著你慢慢生長。"
+              )}
+            </div>
           </section>
         </div>
       </div>

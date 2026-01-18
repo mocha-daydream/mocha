@@ -128,7 +128,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
   light: {
     title: "光芽精靈",
     icon: "🌱✨",
-    imageUrl: "/images/spirit_light.png",
+    imageUrl: "./images/spirit_light.png",
     journeyState: "在此刻的起點，你展現出清晰且具備觀察力的狀態。比起盲目奔走，你更傾向於先理出思緒，在森林中尋找最適合自己的光影位置。",
     traits: ["溫柔的觀察力", "對節奏的細膩感受", "從生活中建立連結"],
     advancementStyle: "在新年裡，建議保持「觀察與思考」的習慣。在行動前先給自己一段沉澱的時間，會讓你走得更踏實。"
@@ -136,7 +136,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
   fire: {
     title: "火芽精靈",
     icon: "🌱🔥",
-    imageUrl: "/images/spirit_fire.png",
+    imageUrl: "./images/spirit_fire.png",
     journeyState: "你體內醞釀著一股生機勃勃的行動力。你是一個喜歡親手觸碰世界的精靈，比起單純的計畫，你更相信實踐後留在掌心的真實溫度。",
     traits: ["直率的嘗試心", "對環境的適應力", "帶動周圍的生命力"],
     advancementStyle: "不需要擔心走錯路，因為你的成長點就在於那些「邁出的第一步」。請繼續保持你的好奇心與熱情。"
@@ -144,7 +144,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
   grass: {
     title: "草芽精靈",
     icon: "🌱🌿",
-    imageUrl: "/images/spirit_grass.png",
+    imageUrl: "./images/spirit_grass.png",
     journeyState: "你擁有最深厚的穩定力量。你像森林中的大地一樣，重視根基的扎實與內心的安寧，不容易被外界的喧囂打亂自己的頻率。",
     traits: ["內在的耐受力", "持之以恆的平穩", "為他人提供安心感"],
     advancementStyle: "適合找到一個讓自己感到安心的規律。在新年裡，當你找對了頻率，你將會長成最溫潤穩固的存在。"
@@ -152,7 +152,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
   wind: {
     title: "風芽精靈",
     icon: "🌱🍃",
-    imageUrl: "/images/spirit_wind.png",
+    imageUrl: "./images/spirit_wind.png",
     journeyState: "你是這座森林裡不受束縛的自在微風。你對新奇的事物充滿好奇，喜歡在偶然中發現意想不到的小驚喜，不拘泥於單一的計畫。",
     traits: ["靈活的視角切換", "對未知的開放心態", "隨遇而安的豁達"],
     advancementStyle: "保持你的靈活性。今年嘗試多去接觸不同的事物，當你不再執著於固定的終點，整個世界都會是你的生長樂園。"
