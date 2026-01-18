@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
-import { RESULTS } from '../constants';
-import { SpiritType } from '../types';
-import { generatePersonalizedResult, PersonalizedContent } from '../services/geminiService';
+import { RESULTS } from '../constants.ts';
+import { SpiritType } from '../types.ts';
+import { generatePersonalizedResult, PersonalizedContent } from '../services/geminiService.ts';
 
 interface Props {
   type: SpiritType;

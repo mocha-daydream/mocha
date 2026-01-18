@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
-import { AppState, SpiritType } from './types';
-import HomeScreen from './components/HomeScreen';
-import QuizScreen from './components/QuizScreen';
-import ResultScreen from './components/ResultScreen';
+import { AppState, SpiritType } from './types.ts';
+import HomeScreen from './components/HomeScreen.tsx';
+import QuizScreen from './components/QuizScreen.tsx';
+import ResultScreen from './components/ResultScreen.tsx';
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppState>('HOME');

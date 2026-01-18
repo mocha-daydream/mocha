@@ -12,6 +12,7 @@
             font-family: "BiauKai", "標楷體", "KaiTi", "Kaiti TC", "Apple LiSung", serif;
             margin: 0;
             padding: 0;
+            background-color: #064e3b; /* emerald-900 */
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -36,7 +37,9 @@
 }
 </script>
 </head>
-<body class="bg-emerald-900 overflow-x-hidden">
+<body class="bg-emerald-900 overflow-x-hidden text-white">
     <div id="root"></div>
+    <!-- 核心修復：明確引入 index.tsx 作為入口模組 -->
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

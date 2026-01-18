@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { QUESTIONS } from '../constants';
-import { SpiritType } from '../types';
+import { QUESTIONS } from '../constants.ts';
+import { SpiritType } from '../types.ts';
 
 interface Props {
   onComplete: (result: SpiritType, choices: string[]) => void;

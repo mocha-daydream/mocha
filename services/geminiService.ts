@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { SpiritType } from "../types";
+import { SpiritType } from "../types.ts";
 
 export interface PersonalizedContent {
   feedback: string;
