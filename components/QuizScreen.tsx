@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { QUESTIONS } from '../constants.ts';
 import { SpiritType } from '../types.ts';
@@ -32,14 +31,12 @@ const QuizScreen: React.FC<Props> = ({ onComplete }) => {
       setChoiceTexts(newChoiceTexts);
       setCurrentIndex(currentIndex + 1);
     } else {
-      // Calculate final result
       const counts: Record<SpiritType, number> = { light: 0, fire: 0, grass: 0, wind: 0 };
       newAnswers.forEach(ans => counts[ans]++);
       
       let maxType: SpiritType = 'light';
       let maxCount = -1;
       
-      // Order: light, fire, grass, wind
       (['light', 'fire', 'grass', 'wind'] as SpiritType[]).forEach(t => {
         if (counts[t] > maxCount) {
           maxCount = counts[t];
@@ -55,7 +52,6 @@ const QuizScreen: React.FC<Props> = ({ onComplete }) => {
 
   return (
     <div className="max-w-2xl mx-auto min-h-[75vh] flex flex-col justify-center animate-fade-in relative px-4">
-      {/* Progress Bar */}
       <div className="mb-12">
         <div className="flex justify-between items-end mb-3">
           <span className="text-xs text-emerald-300 font-medium tracking-widest">旅途進度 {currentIndex + 1} / {QUESTIONS.length}</span>
@@ -68,7 +64,6 @@ const QuizScreen: React.FC<Props> = ({ onComplete }) => {
         </div>
       </div>
 
-      {/* Creature Notice Overlay */}
       {showCreature && q.creature && (
         <div className="mb-8 p-6 bg-emerald-800/40 backdrop-blur-md rounded-3xl border border-emerald-400/30 animate-fade-in shadow-inner">
           <div className="flex items-center gap-4 mb-3">
@@ -84,7 +79,6 @@ const QuizScreen: React.FC<Props> = ({ onComplete }) => {
         </div>
       )}
 
-      {/* Question Card */}
       <div className={`space-y-10 transition-all duration-500 ${showCreature ? 'mt-0' : 'mt-4'}`}>
         <h2 className="text-2xl md:text-3xl font-medium leading-relaxed text-center text-emerald-50">
           {q.text}

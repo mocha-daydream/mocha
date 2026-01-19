@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { SpiritType } from "../types.ts";
 
@@ -7,9 +6,6 @@ export interface PersonalizedContent {
   blessing: string;
 }
 
-/**
- * 安全獲取 API Key，防止 ReferenceError: process is not defined
- */
 const getApiKey = () => {
   try {
     // @ts-ignore
@@ -23,8 +19,16 @@ const getApiKey = () => {
   }
 };
 
+const SPIRIT_NAME_MAP: Record<SpiritType, string> = {
+  light: "光芽精靈",
+  fire: "火芽精靈",
+  grass: "草芽精靈",
+  wind: "風芽精靈"
+};
+
 export const generatePersonalizedResult = async (spiritType: SpiritType, choices: string[]): Promise<PersonalizedContent> => {
   const apiKey = getApiKey();
+  const spiritName = SPIRIT_NAME_MAP[spiritType];
   
   const fallbackContent: PersonalizedContent = {
     feedback: "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。",
@@ -40,12 +44,11 @@ export const generatePersonalizedResult = async (spiritType: SpiritType, choices
     const ai = new GoogleGenAI({ apiKey });
     
     const promptText = `
-      你是一位溫柔的森林守護者。有一位「新芽小精靈旅人」剛剛完成了新年成長之旅。
-      生長狀態：「${spiritType}」。
+      你是一位溫柔的森林守護者。有一位「${spiritName}」剛剛完成了新年成長之旅。
       旅途選擇：${choices.join('、')}。
       
       請撰寫：
-      1. 【feedback】：描述他生長樣態的話（30-45字）。
+      1. 【feedback】：針對這位精靈目前的生長樣態給予鼓勵（30-45字）。
       2. 【blessing】：溫暖的新年結語（20-30字）。
       
       規則：

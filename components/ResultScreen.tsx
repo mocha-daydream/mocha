@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { RESULTS } from '../constants.ts';
 import { SpiritType } from '../types.ts';
@@ -13,7 +12,6 @@ interface Props {
 const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
   const [aiContent, setAiContent] = useState<PersonalizedContent | null>(null);
   const [loading, setLoading] = useState(true);
-  const [imgError, setImgError] = useState(false);
   const data = RESULTS[type];
 
   const glowColors: Record<SpiritType, string> = {
@@ -52,7 +50,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
 
   return (
     <div className="flex flex-col items-center animate-fade-in max-w-2xl mx-auto pb-24 px-4">
-      
       <div className="w-full bg-[#fdfaf1] text-emerald-900 rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.5)] overflow-hidden relative border-y-8 border-emerald-900">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
         
@@ -63,28 +60,14 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             
             <div className="relative inline-block mb-8">
               <div className="absolute -inset-2 bg-white rounded-[2rem] blur-sm opacity-50"></div>
-              <div className={`relative w-64 h-64 md:w-80 md:h-80 overflow-hidden rounded-[2.5rem] border-4 border-white shadow-xl flex items-center justify-center bg-emerald-50/30 ${glowColors[type]}`}>
-                {!imgError ? (
-                  <img 
-                    src={data.imageUrl} 
-                    alt={data.title}
-                    className="w-full h-full object-cover transition-opacity duration-700"
-                    onLoad={(e) => (e.currentTarget.style.opacity = "1")}
-                    onError={(e) => {
-                      console.error("Image load failed:", data.imageUrl);
-                      setImgError(true);
-                    }}
-                    style={{ opacity: 0 }}
-                  />
-                ) : (
-                  <div className="text-center p-6 bg-emerald-100/50 w-full h-full flex flex-col justify-center items-center space-y-2">
-                    <span className="text-5xl opacity-40">🍃</span>
-                    <p className="text-xs text-emerald-800/60 font-sans">精靈躲起來了...</p>
-                    <div className="bg-white/50 px-3 py-1 rounded text-[10px] text-red-800/40 font-mono break-all">
-                      {data.imageUrl}
-                    </div>
-                  </div>
-                )}
+              <div className={`relative w-64 h-64 md:w-80 md:h-80 overflow-hidden rounded-[2.5rem] border-4 border-white shadow-xl flex items-center justify-center bg-white ${glowColors[type]}`}>
+                <img 
+                  src={data.imageUrl} 
+                  alt={data.title}
+                  className="w-full h-full object-cover transition-opacity duration-700"
+                  onLoad={(e) => (e.currentTarget.style.opacity = "1")}
+                  style={{ opacity: 0 }}
+                />
               </div>
               <div className="absolute -bottom-4 -right-4 bg-white px-4 py-2 rounded-2xl shadow-lg border border-emerald-900/5 rotate-12">
                 <span className="text-3xl">{data.icon}</span>
@@ -101,77 +84,47 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </h3>
             <div className="text-xl italic text-emerald-800 font-medium leading-relaxed pl-4 border-l-2 border-emerald-200 min-h-[3rem]">
               {loading ? (
-                <span className="opacity-30 animate-pulse">正在聆聽森林的回音...</span>
+                <span className="animate-pulse opacity-50">森林正在為你書寫祝福...</span>
               ) : (
-                `「${aiContent?.feedback || "你在森林中緩緩而行，那份獨特的寧靜是土地給予你最好的新年禮物。"}」`
+                aiContent?.feedback
               )}
             </div>
           </section>
 
-          <section>
-            <h3 className="text-sm font-bold tracking-widest text-emerald-800/40 mb-4 flex items-center gap-3">
-              <span className="w-8 h-px bg-emerald-800/20"></span>
-              【你此刻的旅途樣貌】
-            </h3>
-            <p className="text-base text-emerald-900/90 leading-relaxed font-light">
-              {data.journeyState}
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <section className="space-y-4">
+              <h3 className="text-xs font-bold tracking-widest text-emerald-800/40 uppercase">生長狀態</h3>
+              <p className="text-lg text-emerald-900/80 font-light">{data.journeyState}</p>
+            </section>
+
+            <section className="space-y-4">
+              <h3 className="text-xs font-bold tracking-widest text-emerald-800/40 uppercase">靈魂特質</h3>
+              <div className="flex flex-wrap gap-2">
+                {data.traits.map(t => (
+                  <span key={t} className="px-3 py-1 bg-emerald-900/5 rounded-full text-sm font-medium">#{t}</span>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <section className="p-8 bg-emerald-900/5 rounded-3xl border border-emerald-900/5">
+            <h3 className="text-xs font-bold tracking-widest text-emerald-800/40 uppercase mb-4">成長指引</h3>
+            <p className="text-lg text-emerald-800">{data.advancementStyle}</p>
           </section>
 
-          <section>
-            <h3 className="text-sm font-bold tracking-widest text-emerald-800/40 mb-4 flex items-center gap-3">
-              <span className="w-8 h-px bg-emerald-800/20"></span>
-              【正在萌芽的小美好】
-            </h3>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {data.traits.map((trait, i) => (
-                <li key={i} className="flex items-center gap-3 bg-emerald-900/5 px-4 py-2 rounded-full text-sm font-medium">
-                  <span className="text-emerald-600">・</span>
-                  {trait}
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section>
-            <h3 className="text-sm font-bold tracking-widest text-emerald-800/40 mb-4 flex items-center gap-3">
-              <span className="w-8 h-px bg-emerald-800/20"></span>
-              【適合你的前進步調】
-            </h3>
-            <div className="p-6 rounded-2xl bg-emerald-100/50 border border-emerald-900/5 text-emerald-900 leading-relaxed italic text-base">
-              {data.advancementStyle}
-            </div>
-          </section>
-
-          <section className="pt-10 border-t border-emerald-900/10 text-center">
-            <h3 className="text-sm font-bold tracking-widest text-emerald-800/40 mb-4 flex items-center justify-center gap-3">
-               【新年祝福】
-            </h3>
-            <div className="text-xl font-bold text-emerald-800 tracking-wide min-h-[1.5rem]">
-              {loading ? (
-                <span className="opacity-30 animate-pulse">森林正在準備祝福...</span>
-              ) : (
-                aiContent?.blessing || "願你的心中始終有一片溫柔的森林，陪著你慢慢生長。"
-              )}
-            </div>
-          </section>
+          <div className="pt-8 text-center">
+            <p className="text-2xl font-bold text-emerald-900 mb-2">「 {loading ? "..." : aiContent?.blessing} 」</p>
+            <p className="text-xs text-emerald-800/40 tracking-widest">— 給你的新年祝福 —</p>
+          </div>
         </div>
       </div>
 
-      <div className="mt-16 flex flex-col sm:flex-row gap-6 w-full px-4">
-        <button 
-          onClick={onRestart}
-          className="flex-1 py-4 rounded-full bg-white/10 text-white font-medium hover:bg-white/20 transition backdrop-blur-md border border-white/20 active:scale-95"
-        >
-          重新出發
-        </button>
-        <button 
-          onClick={() => window.location.reload()}
-          className="flex-1 py-4 rounded-full bg-emerald-400 text-emerald-950 font-bold hover:bg-emerald-300 transition shadow-lg shadow-emerald-400/20 active:scale-95"
-        >
-          結束旅程
-        </button>
-      </div>
+      <button 
+        onClick={onRestart}
+        className="mt-12 px-12 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full transition-all text-sm tracking-widest font-bold uppercase"
+      >
+        重新開始旅程
+      </button>
     </div>
   );
 };
