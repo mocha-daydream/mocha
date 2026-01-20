@@ -1,18 +1,16 @@
+
 import { Question, ResultData, SpiritType } from './types.ts';
 
 /**
- * 輕量化圖片資源 (暫時回退)
+ * 根據使用者最新上傳的圖片進行對應
  */
 export const SPIRIT_ASSETS = {
-  light: 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=400&q=80',
-  fire: 'https://images.mhp-asset.com/v3/46/74/46740660-8484-4762-b13c-09756073167b/1.jpg',
-  grass: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&q=80',
-  wind: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&q=80'
+  grass: 'input_file_0.png', // 綠色森精靈
+  fire: 'input_file_1.png',  // 紅色火精靈
+  wind: 'input_file_2.png',  // 藍色風精靈
+  light: 'input_file_3.png'  // 黃色光精靈
 };
 
-/**
- * 測驗題目與選項
- */
 export const QUESTIONS: Question[] = [
   {
     id: 1,
@@ -35,7 +33,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { label: "追隨陽光的指引，往最高處爬去", type: "light" },
       { label: "哪裡有熱鬧的聲音，就往哪裡跑", type: "fire" },
-      { label: "靜靜观察四周，與身旁的植物打招呼", type: "grass" },
+      { label: "靜靜觀察四周，與身旁的植物打招呼", type: "grass" },
       { label: "張開透明的翅膀，隨風飄蕩", type: "wind" }
     ]
   },
@@ -81,9 +79,6 @@ export const QUESTIONS: Question[] = [
   }
 ];
 
-/**
- * 測驗結果數據
- */
 export const RESULTS: Record<SpiritType, ResultData> = {
   light: {
     title: "光芽精靈",
@@ -94,7 +89,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
     advancementStyle: "像光一樣前進，不畏艱難，始終相信美好的未來。"
   },
   fire: {
-    title: "火芽精靈",
+    title: "鍛芽精靈",
     icon: "🔥",
     imageUrl: SPIRIT_ASSETS.fire,
     journeyState: "在躍動的火焰中成長，每一刻都充滿熱忱與活力。",
@@ -102,7 +97,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
     advancementStyle: "用熱情驅動夢想，不論身處何方，都能點燃希望的火苗。"
   },
   grass: {
-    title: "草芽精靈",
+    title: "森芽精靈",
     icon: "🍃",
     imageUrl: SPIRIT_ASSETS.grass,
     journeyState: "在靜謐的泥土中紮根，感受大地的脈動與生命力。",

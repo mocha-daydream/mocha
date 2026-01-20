@@ -7,23 +7,51 @@
     <title>新芽小精靈・晨曦之旅</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 定義全域標楷體字體集 */
+        /* 載入襯線字體作為備援 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap');
+
         body {
-            font-family: "BiauKai", "標楷體", "KaiTi", "Kaiti TC", "Apple LiSung", serif;
+            /* 優先使用標楷體 */
+            font-family: "BiauKai", "標楷體", "Apple LiSung", "微軟正黑體", serif;
             margin: 0;
             padding: 0;
-            background-color: #064e3b; /* emerald-900 */
+            background-color: #064e3b;
+            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+            color: #f0fdf4;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .gold-text {
+            background: linear-gradient(45deg, #bf953f 0%, #fcf6ba 45%, #b38728 70%, #fbf5b7 85%, #aa771c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
         }
-        .animate-fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
+
+        .gold-border-classic {
+            position: relative;
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #bf953f, #fcf6ba, #aa771c) 1;
         }
-        /* 強制所有類別使用標楷體 */
-        h1, h2, h3, h4, p, span, button, div {
-            font-family: "BiauKai", "標楷體", "KaiTi", "Kaiti TC", "Apple LiSung", serif;
+
+        /* 魔法金色粒子 */
+        @keyframes float-particle {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+
+        .particle {
+            position: fixed;
+            background: radial-gradient(circle, #fcf6ba 0%, rgba(191,149,63,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 古典裝飾花 */
+        .flower-ornament {
+            color: #bf953f;
+            opacity: 0.6;
         }
     </style>
 <script type="importmap">
@@ -37,9 +65,25 @@
 }
 </script>
 </head>
-<body class="bg-emerald-900 overflow-x-hidden text-white">
+<body class="bg-emerald-950 overflow-x-hidden">
+    <!-- 漂浮粒子背景 -->
+    <div id="particles"></div>
+    <script>
+        const container = document.getElementById('particles');
+        for(let i=0; i<30; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 4 + 2;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = Math.random() * 100 + 'vh';
+            p.style.animation = `float-particle ${Math.random() * 10 + 10}s linear infinite`;
+            p.style.animationDelay = `${Math.random() * 5}s`;
+            container.appendChild(p);
+        }
+    </script>
     <div id="root"></div>
-    <!-- 核心修復：明確引入 index.tsx 作為入口模組 -->
     <script type="module" src="./index.tsx"></script>
 </body>
 </html>
