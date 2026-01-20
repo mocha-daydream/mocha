@@ -2,15 +2,14 @@
 import { Question, ResultData, SpiritType } from './types.ts';
 
 /**
- * 圖片資源對應說明：
- * 即使您上傳的是 .jpg，系統會自動轉換為 .png。
- * 格式統一為 input_file_N.png (N 從 0 開始)
+ * 重要：在此環境中，不論原始格式，上傳的檔案會自動命名為：
+ * input_file_0.png, input_file_1.png, input_file_2.png, input_file_3.png
  */
 export const SPIRIT_ASSETS = {
-  grass: 'input_file_0.png', // 綠色森精靈
-  fire: 'input_file_1.png',  // 紅色火精靈
-  wind: 'input_file_2.png',  // 藍色風精靈
-  light: 'input_file_3.png'  // 黃色光精靈
+  grass: 'input_file_0.png', 
+  fire: 'input_file_1.png',  
+  wind: 'input_file_2.png',  
+  light: 'input_file_3.png'  
 };
 
 export const QUESTIONS: Question[] = [
@@ -96,7 +95,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
     imageUrl: SPIRIT_ASSETS.fire,
     journeyState: "在躍動的火焰中成長，每一刻都充滿熱忱與活力。",
     traits: ["勇敢無畏", "熱情奔放", "行動力十足"],
-    advancementStyle: "用熱情驅動夢夢想，不論身處何方，都能點燃希望的火苗。"
+    advancementStyle: "用熱情驅動夢想，不論身處何方，都能點燃希望的火苗。"
   },
   grass: {
     title: "森芽精靈",

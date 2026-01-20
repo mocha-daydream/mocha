@@ -39,13 +39,13 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
     return () => { isMounted = false; };
   }, [type, choices]);
 
+  // 渲染邏輯
   return (
     <div className="flex flex-col items-center animate-fade-in max-w-2xl mx-auto pb-16 px-4 pt-0">
       
       {/* 主要結果卡片 */}
       <div className="w-full bg-[#fefdfa] text-emerald-900 rounded-[3rem] shadow-[0_40px_80px_rgba(0,0,0,0.6)] overflow-hidden relative border-[12px] border-emerald-950 mt-4">
         
-        {/* 背景材質 */}
         <div className="absolute inset-0 opacity-[0.06] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
 
         <div className="p-8 md:p-12 space-y-8 leading-loose relative z-10">
@@ -61,7 +61,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
               <div className="relative w-56 h-56 md:w-72 md:h-72 overflow-hidden rounded-[2.5rem] border-4 border-white shadow-2xl bg-emerald-50 flex items-center justify-center">
                 {!imgError ? (
                   <img 
-                    src={data.imageUrl} 
+                    src={`${data.imageUrl}`} 
                     alt={data.title}
                     className={`w-full h-full object-cover transition-opacity duration-1000 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
                     onError={() => {
@@ -71,13 +71,14 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
                     onLoad={() => setImgLoaded(true)}
                   />
                 ) : (
-                  <div className="text-center p-6">
-                    <span className="text-5xl mb-3 block">{data.icon}</span>
-                    <p className="text-[10px] text-emerald-800/40 font-bold uppercase tracking-widest">森林霧氣太濃<br/>看不清精靈的身影</p>
+                  <div className="text-center p-6 bg-emerald-50 w-full h-full flex flex-col justify-center items-center">
+                    <span className="text-6xl mb-4 block filter grayscale opacity-30">{data.icon}</span>
+                    <p className="text-[10px] text-emerald-800/40 font-bold uppercase tracking-[0.2em] leading-relaxed">
+                      檔案編號可能不正確<br/>請確認上傳了 4 張圖<br/>編號為 0, 1, 2, 3
+                    </p>
                   </div>
                 )}
                 
-                {/* 載入中的骨架屏效果 */}
                 {!imgLoaded && !imgError && (
                   <div className="absolute inset-0 bg-emerald-100 animate-pulse flex items-center justify-center">
                     <span className="text-emerald-800/20 text-4xl">❁</span>
@@ -85,7 +86,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
                 )}
               </div>
 
-              {/* 裝飾圖案 */}
               <div className="absolute -top-4 -left-4 text-[#bf953f] text-3xl animate-pulse">❁</div>
               <div className="absolute -bottom-4 -right-4 bg-white px-6 py-3 rounded-[1.2rem] shadow-xl border border-[#bf953f]/20 -rotate-3 flex items-center gap-2">
                 <span className="text-3xl">{data.icon}</span>
@@ -96,7 +96,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             <h1 className="text-5xl md:text-6xl font-black tracking-tighter gold-text">《{data.title}》</h1>
           </div>
 
-          {/* 森林低語 */}
           <section className="relative px-4">
             <div className="text-[#bf953f] opacity-20 text-xl mb-4 text-center">❁ ☆ ★</div>
             <div className="text-xl md:text-2xl text-emerald-900 font-bold leading-relaxed italic min-h-[4rem] text-left">
@@ -108,7 +107,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </div>
           </section>
 
-          {/* 特質與狀態 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
             <section className="space-y-2 p-4 bg-emerald-900/[0.02] rounded-2xl border border-emerald-900/5">
               <h3 className="text-[10px] font-black tracking-[0.2em] text-emerald-800/40 uppercase border-l-2 border-[#bf953f] pl-2">目前的生長狀態 ❁</h3>
@@ -125,7 +123,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </section>
           </div>
 
-          {/* 新年指引 */}
           <section className="p-8 bg-emerald-900/[0.03] rounded-[2rem] border-2 border-dashed border-[#bf953f]/30 relative mx-2">
             <div className="absolute -top-3 left-8 px-4 bg-[#fefdfa] text-[#bf953f] text-[9px] font-black tracking-widest uppercase">
               ☆ New Year Guidance ☆
@@ -135,7 +132,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </p>
           </section>
 
-          {/* 祝福結語 */}
           <div className="pt-6 text-center space-y-4">
             <div className="h-px w-32 bg-gradient-to-r from-transparent via-[#bf953f]/20 to-transparent mx-auto"></div>
             <p className="text-2xl md:text-3xl font-black gold-text px-4 leading-tight">
@@ -149,7 +145,6 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
         </div>
       </div>
 
-      {/* 按鈕 */}
       <button 
         onClick={onRestart}
         className="mt-12 group relative px-14 py-4 overflow-hidden rounded-full transition-all active:scale-95 shadow-xl"
