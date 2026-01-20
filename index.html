@@ -1,10 +1,21 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新芽小精靈・晨曦之旅</title>
+    <script>
+        // 為了提供更乾淨的開發體驗，攔截並過濾掉 Tailwind CDN 的生產環境警告
+        (function() {
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+                    return;
+                }
+                originalWarn.apply(console, args);
+            };
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* 載入襯線字體作為備援 */
