@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { RESULTS } from '../constants.ts';
 import { SpiritType } from '../types.ts';
 import { generatePersonalizedResult, PersonalizedContent } from '../services/geminiService.ts';
@@ -15,7 +15,33 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
   const [loading, setLoading] = useState(true);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
+  
   const data = RESULTS[type];
+  
+  // 建立絕對路徑與相對路徑的混合策略
+  const strategies = useMemo(() => {
+    const idx = type === 'grass' ? '0' : type === 'fire' ? '1' : type === 'wind' ? '2' : '3';
+    const origin = window.location.origin;
+    const path = window.location.pathname.split('/').slice(0, -1).join('/');
+    const basePath = `${origin}${path}`;
+
+    return [
+      `${idx}.jpg`,
+      `./${idx}.jpg`,
+      `${basePath}/${idx}.jpg`,
+      `input_file_${idx}.png`,
+      `input_file_${idx}.jpg`,
+      `./input_file_${idx}.png`,
+      `${origin}/input_file_${idx}.png`,
+      `${basePath}/input_file_${idx}.png`,
+      `assets/${idx}.jpg`,
+      `src/${idx}.jpg`
+    ];
+  }, [type]);
+
+  const [strategyIndex, setStrategyIndex] = useState(0);
+  const currentUrl = strategies[strategyIndex];
 
   useEffect(() => {
     let isMounted = true;
@@ -39,11 +65,18 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
     return () => { isMounted = false; };
   }, [type, choices]);
 
-  // 渲染邏輯
+  const handleImageError = () => {
+    setDebugLogs(prev => [...prev, `FAIL: ${currentUrl}`]);
+    if (strategyIndex < strategies.length - 1) {
+      setStrategyIndex(prev => prev + 1);
+    } else {
+      setImgError(true);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center animate-fade-in max-w-2xl mx-auto pb-16 px-4 pt-0">
       
-      {/* 主要結果卡片 */}
       <div className="w-full bg-[#fefdfa] text-emerald-900 rounded-[3rem] shadow-[0_40px_80px_rgba(0,0,0,0.6)] overflow-hidden relative border-[12px] border-emerald-950 mt-4">
         
         <div className="absolute inset-0 opacity-[0.06] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
@@ -61,102 +94,113 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
               <div className="relative w-56 h-56 md:w-72 md:h-72 overflow-hidden rounded-[2.5rem] border-4 border-white shadow-2xl bg-emerald-50 flex items-center justify-center">
                 {!imgError ? (
                   <img 
-                    src={`${data.imageUrl}`} 
+                    src={currentUrl} 
                     alt={data.title}
-                    className={`w-full h-full object-cover transition-opacity duration-1000 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    onError={() => {
-                      console.error("Failed to load image:", data.imageUrl);
-                      setImgError(true);
-                    }}
+                    className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onError={handleImageError}
                     onLoad={() => setImgLoaded(true)}
                   />
                 ) : (
-                  <div className="text-center p-6 bg-emerald-50 w-full h-full flex flex-col justify-center items-center">
-                    <span className="text-6xl mb-4 block filter grayscale opacity-30">{data.icon}</span>
-                    <p className="text-[10px] text-emerald-800/40 font-bold uppercase tracking-[0.2em] leading-relaxed">
-                      檔案編號可能不正確<br/>請確認上傳了 4 張圖<br/>編號為 0, 1, 2, 3
-                    </p>
+                  <div className="text-center p-6 bg-emerald-50 w-full h-full flex flex-col items-center justify-center">
+                    <span className="text-7xl mb-4">{data.icon}</span>
+                    <p className="text-xs text-emerald-800/40 uppercase font-black tracking-widest">Image Unavailable</p>
+                    <button 
+                      onClick={() => { setStrategyIndex(0); setImgError(false); setDebugLogs([]); }}
+                      className="mt-4 text-[10px] underline text-emerald-800/50 hover:text-emerald-800"
+                    >
+                      重新掃描路徑
+                    </button>
                   </div>
                 )}
                 
                 {!imgLoaded && !imgError && (
-                  <div className="absolute inset-0 bg-emerald-100 animate-pulse flex items-center justify-center">
-                    <span className="text-emerald-800/20 text-4xl">❁</span>
+                  <div className="absolute inset-0 flex items-center justify-center bg-emerald-50/50">
+                    <div className="w-8 h-8 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
                   </div>
                 )}
               </div>
-
-              <div className="absolute -top-4 -left-4 text-[#bf953f] text-3xl animate-pulse">❁</div>
-              <div className="absolute -bottom-4 -right-4 bg-white px-6 py-3 rounded-[1.2rem] shadow-xl border border-[#bf953f]/20 -rotate-3 flex items-center gap-2">
-                <span className="text-3xl">{data.icon}</span>
-                <span className="text-xs gold-text">★</span>
-              </div>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter gold-text">《{data.title}》</h1>
+            <div className="space-y-6">
+              <h1 className="text-5xl font-black tracking-widest text-emerald-950 flex items-center justify-center gap-4">
+                <span className="text-3xl opacity-30">❁</span> {data.title} <span className="text-3xl opacity-30">❁</span>
+              </h1>
+              <div className="w-24 h-1.5 bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] mx-auto rounded-full shadow-lg"></div>
+            </div>
           </div>
 
-          <section className="relative px-4">
-            <div className="text-[#bf953f] opacity-20 text-xl mb-4 text-center">❁ ☆ ★</div>
-            <div className="text-xl md:text-2xl text-emerald-900 font-bold leading-relaxed italic min-h-[4rem] text-left">
-              {loading ? (
-                <span className="animate-pulse opacity-20">正在轉譯森林的氣息...</span>
-              ) : (
-                `「${aiContent?.feedback}」`
-              )}
+          <div className="grid gap-8 md:grid-cols-2">
+            <div className="space-y-6 bg-white p-8 rounded-[2rem] shadow-inner border border-emerald-100">
+              <div className="flex items-center gap-3 text-emerald-900 mb-2">
+                <span className="text-xl">🌱</span>
+                <h3 className="font-black text-lg tracking-widest uppercase opacity-40">生長狀態</h3>
+              </div>
+              <p className="text-xl text-emerald-800 font-medium leading-relaxed">{data.journeyState}</p>
             </div>
-          </section>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
-            <section className="space-y-2 p-4 bg-emerald-900/[0.02] rounded-2xl border border-emerald-900/5">
-              <h3 className="text-[10px] font-black tracking-[0.2em] text-emerald-800/40 uppercase border-l-2 border-[#bf953f] pl-2">目前的生長狀態 ❁</h3>
-              <p className="text-base text-emerald-900/80 font-bold leading-relaxed">{data.journeyState}</p>
-            </section>
-
-            <section className="space-y-2 p-4 bg-emerald-900/[0.02] rounded-2xl border border-emerald-900/5">
-              <h3 className="text-[10px] font-black tracking-[0.2em] text-emerald-800/40 uppercase border-l-2 border-[#bf953f] pl-2">內在靈魂特質 ★</h3>
-              <div className="flex flex-wrap gap-2">
-                {data.traits.map(t => (
-                  <span key={t} className="px-2 py-0.5 bg-white border border-[#bf953f]/20 rounded-md text-[10px] font-black text-emerald-800 shadow-sm">#{t}</span>
+            
+            <div className="space-y-6 bg-white p-8 rounded-[2rem] shadow-inner border border-emerald-100">
+              <div className="flex items-center gap-3 text-emerald-900 mb-2">
+                <span className="text-xl">✨</span>
+                <h3 className="font-black text-lg tracking-widest uppercase opacity-40">精靈特質</h3>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {data.traits.map((trait, idx) => (
+                  <span key={idx} className="px-5 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-bold border border-emerald-100">
+                    {trait}
+                  </span>
                 ))}
               </div>
-            </section>
+            </div>
           </div>
 
-          <section className="p-8 bg-emerald-900/[0.03] rounded-[2rem] border-2 border-dashed border-[#bf953f]/30 relative mx-2">
-            <div className="absolute -top-3 left-8 px-4 bg-[#fefdfa] text-[#bf953f] text-[9px] font-black tracking-widest uppercase">
-              ☆ New Year Guidance ☆
-            </div>
-            <p className="text-lg md:text-xl text-emerald-800 leading-relaxed font-bold text-left">
-               ❁ {data.advancementStyle}
-            </p>
-          </section>
+          <div className="bg-emerald-950/5 p-10 rounded-[3rem] border-2 border-dashed border-emerald-900/10 space-y-6">
+            <h3 className="text-center font-black text-emerald-900/40 tracking-[0.4em] uppercase text-sm">★ 守護者的引導 ★</h3>
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-10 space-y-4">
+                <div className="w-12 h-12 border-4 border-[#bf953f] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-emerald-800/60 font-medium animate-pulse tracking-widest">正在聽取森林的回應...</p>
+              </div>
+            ) : (
+              <div className="space-y-8 animate-fade-in text-center">
+                <p className="text-2xl text-emerald-900 font-medium leading-relaxed italic">「{aiContent?.feedback}」</p>
+                <div className="h-px w-20 bg-[#bf953f]/30 mx-auto"></div>
+                <p className="text-lg text-emerald-800/70 font-bold tracking-widest leading-loose">{aiContent?.blessing}</p>
+              </div>
+            )}
+          </div>
 
-          <div className="pt-6 text-center space-y-4">
-            <div className="h-px w-32 bg-gradient-to-r from-transparent via-[#bf953f]/20 to-transparent mx-auto"></div>
-            <p className="text-2xl md:text-3xl font-black gold-text px-4 leading-tight">
-               ★ {loading ? "..." : aiContent?.blessing} ★
-            </p>
-            <div className="flex flex-col items-center gap-1 opacity-40">
-               <p className="text-[9px] text-emerald-800 tracking-[0.4em] font-black uppercase">Blessed by World Tree ❁</p>
-               <span className="text-xs">☆</span>
+          <div className="bg-emerald-900 text-white p-8 rounded-[2.5rem] space-y-4">
+            <div className="flex items-center gap-3 opacity-40 mb-2">
+              <span className="text-lg">🧭</span>
+              <h3 className="font-black text-xs tracking-[0.3em] uppercase">前行之道</h3>
             </div>
+            <p className="text-lg font-medium leading-relaxed">{data.advancementStyle}</p>
           </div>
         </div>
       </div>
 
       <button 
         onClick={onRestart}
-        className="mt-12 group relative px-14 py-4 overflow-hidden rounded-full transition-all active:scale-95 shadow-xl"
+        className="mt-16 px-16 py-6 bg-white text-emerald-950 rounded-full font-black text-xl hover:scale-105 transition-all shadow-2xl active:scale-95 border-b-4 border-[#bf953f] flex items-center gap-4 group"
       >
-        <div className="absolute inset-0 bg-emerald-900 group-hover:bg-emerald-800 transition-all"></div>
-        <div className="absolute inset-0 animate-shimmer opacity-20"></div>
-        <span className="relative text-sm tracking-[0.4em] font-black uppercase text-[#fcf6ba] flex items-center gap-3">
-          <span>❁</span> 重啟森林之旅 <span>☆</span>
-        </span>
+        <span className="text-[#bf953f] transition-transform group-hover:-rotate-45">↺</span> 重新踏上旅程
       </button>
 
-      <p className="mt-6 text-[9px] text-white/10 tracking-[0.8em] font-bold uppercase">★ Happy New Year 2025 ★</p>
+      {imgError && (
+        <div className="mt-8 p-6 bg-black/90 text-[10px] font-mono text-emerald-400 rounded-2xl w-full border border-emerald-500/30">
+          <p className="text-[#bf953f] mb-3 font-bold border-b border-[#bf953f]/30 pb-1">DIAGNOSTIC CONSOLE:</p>
+          <div className="space-y-1">
+            {debugLogs.map((log, i) => <div key={i} className="opacity-70">{log}</div>)}
+          </div>
+          <div className="mt-4 text-white p-2 bg-emerald-900/50 rounded">
+            嘗試的路徑皆無法載入。請確認您的檔案 0.jpg 到 3.jpg 是否確實位於 index.html 同級目錄。
+          </div>
+        </div>
+      )}
+
+      <div className="mt-12 text-emerald-100/30 text-xs tracking-widest uppercase font-black text-center">
+        ★ New Year Spiritual Journey 2025 ★
+      </div>
     </div>
   );
 };

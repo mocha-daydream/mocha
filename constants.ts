@@ -2,14 +2,14 @@
 import { Question, ResultData, SpiritType } from './types.ts';
 
 /**
- * 重要：在此環境中，不論原始格式，上傳的檔案會自動命名為：
- * input_file_0.png, input_file_1.png, input_file_2.png, input_file_3.png
+ * 圖片資源對應：
+ * 根據您的說明，目前專案根目錄中包含 0.jpg, 1.jpg, 2.jpg, 3.jpg
  */
 export const SPIRIT_ASSETS = {
-  grass: 'input_file_0.png', 
-  fire: 'input_file_1.png',  
-  wind: 'input_file_2.png',  
-  light: 'input_file_3.png'  
+  grass: '0.jpg', 
+  fire: '1.jpg',  
+  wind: '2.jpg',  
+  light: '3.jpg'  
 };
 
 export const QUESTIONS: Question[] = [
