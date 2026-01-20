@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { SpiritType } from "../types.ts";
 
@@ -5,19 +6,6 @@ export interface PersonalizedContent {
   feedback: string;
   blessing: string;
 }
-
-const getApiKey = () => {
-  try {
-    // @ts-ignore
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      // @ts-ignore
-      return process.env.API_KEY;
-    }
-    return "";
-  } catch (e) {
-    return "";
-  }
-};
 
 const SPIRIT_NAME_MAP: Record<SpiritType, string> = {
   light: "光芽精靈",
@@ -27,7 +15,6 @@ const SPIRIT_NAME_MAP: Record<SpiritType, string> = {
 };
 
 export const generatePersonalizedResult = async (spiritType: SpiritType, choices: string[]): Promise<PersonalizedContent> => {
-  const apiKey = getApiKey();
   const spiritName = SPIRIT_NAME_MAP[spiritType];
   
   const fallbackContent: PersonalizedContent = {
@@ -35,8 +22,11 @@ export const generatePersonalizedResult = async (spiritType: SpiritType, choices
     blessing: "願你的心中始終有一片溫柔的森林，陪著你慢慢生長。"
   };
 
+  // 直接從環境變數獲取 API Key
+  const apiKey = process.env.API_KEY;
+
   if (!apiKey) {
-    console.warn("API Key is missing, using fallback content.");
+    console.warn("API Key is not defined in process.env.API_KEY");
     return fallbackContent;
   }
 
