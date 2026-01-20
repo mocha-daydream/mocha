@@ -13,6 +13,7 @@ interface Props {
 const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
   const [aiContent, setAiContent] = useState<PersonalizedContent | null>(null);
   const [loading, setLoading] = useState(true);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const data = RESULTS[type];
 
@@ -50,13 +51,11 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
         <div className="p-8 md:p-12 space-y-8 leading-loose relative z-10">
           
           <div className="text-center">
-            {/* 頂部文字直接開始，已移除所有圓弧裝飾線 */}
             <p className="text-xs tracking-[0.6em] text-emerald-800/50 mb-6 font-black uppercase gold-text flex items-center justify-center gap-3">
               ★ Journey Accomplished ★
             </p>
             
             <div className="relative inline-block mb-8">
-              {/* 精靈肖像古典外框 */}
               <div className="absolute -inset-5 bg-gradient-to-br from-[#bf953f] via-[#fcf6ba] to-[#aa771c] rounded-[3.5rem] blur-sm opacity-20"></div>
               
               <div className="relative w-56 h-56 md:w-72 md:h-72 overflow-hidden rounded-[2.5rem] border-4 border-white shadow-2xl bg-emerald-50 flex items-center justify-center">
@@ -64,15 +63,24 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
                   <img 
                     src={data.imageUrl} 
                     alt={data.title}
-                    className="w-full h-full object-cover transition-opacity duration-1000"
-                    onError={() => setImgError(true)}
-                    onLoad={(e) => (e.currentTarget.style.opacity = "1")}
-                    style={{ opacity: 0 }}
+                    className={`w-full h-full object-cover transition-opacity duration-1000 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onError={() => {
+                      console.error("Failed to load image:", data.imageUrl);
+                      setImgError(true);
+                    }}
+                    onLoad={() => setImgLoaded(true)}
                   />
                 ) : (
                   <div className="text-center p-6">
                     <span className="text-5xl mb-3 block">{data.icon}</span>
                     <p className="text-[10px] text-emerald-800/40 font-bold uppercase tracking-widest">森林霧氣太濃<br/>看不清精靈的身影</p>
+                  </div>
+                )}
+                
+                {/* 載入中的骨架屏效果 */}
+                {!imgLoaded && !imgError && (
+                  <div className="absolute inset-0 bg-emerald-100 animate-pulse flex items-center justify-center">
+                    <span className="text-emerald-800/20 text-4xl">❁</span>
                   </div>
                 )}
               </div>
@@ -88,7 +96,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             <h1 className="text-5xl md:text-6xl font-black tracking-tighter gold-text">《{data.title}》</h1>
           </div>
 
-          {/* 森林低語 (自動生成的文字設為靠左對齊) */}
+          {/* 森林低語 */}
           <section className="relative px-4">
             <div className="text-[#bf953f] opacity-20 text-xl mb-4 text-center">❁ ☆ ★</div>
             <div className="text-xl md:text-2xl text-emerald-900 font-bold leading-relaxed italic min-h-[4rem] text-left">
@@ -117,7 +125,7 @@ const ResultScreen: React.FC<Props> = ({ type, choices, onRestart }) => {
             </section>
           </div>
 
-          {/* 新年指引 (自動生成的文字設為靠左對齊) */}
+          {/* 新年指引 */}
           <section className="p-8 bg-emerald-900/[0.03] rounded-[2rem] border-2 border-dashed border-[#bf953f]/30 relative mx-2">
             <div className="absolute -top-3 left-8 px-4 bg-[#fefdfa] text-[#bf953f] text-[9px] font-black tracking-widest uppercase">
               ☆ New Year Guidance ☆

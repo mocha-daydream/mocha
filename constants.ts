@@ -3,12 +3,13 @@ import { Question, ResultData, SpiritType } from './types.ts';
 
 /**
  * 根據使用者最新上傳的圖片進行對應
+ * 移除 ./ 前綴，直接使用檔名以提高載入成功率
  */
 export const SPIRIT_ASSETS = {
-  grass: 'input_file_0.png', // 綠色森精靈
-  fire: 'input_file_1.png',  // 紅色火精靈
-  wind: 'input_file_2.png',  // 藍色風精靈
-  light: 'input_file_3.png'  // 黃色光精靈
+  grass: 'input_file_0.jpg', // 綠色森精靈
+  fire: 'input_file_1.jpg',  // 紅色火精靈
+  wind: 'input_file_2.jpg',  // 藍色風精靈
+  light: 'input_file_3.jpg'  // 黃色光精靈
 };
 
 export const QUESTIONS: Question[] = [
@@ -94,7 +95,7 @@ export const RESULTS: Record<SpiritType, ResultData> = {
     imageUrl: SPIRIT_ASSETS.fire,
     journeyState: "在躍動的火焰中成長，每一刻都充滿熱忱與活力。",
     traits: ["勇敢無畏", "熱情奔放", "行動力十足"],
-    advancementStyle: "用熱情驅動夢想，不論身處何方，都能點燃希望的火苗。"
+    advancementStyle: "用熱情驅動夢夢想，不論身處何方，都能點燃希望的火苗。"
   },
   grass: {
     title: "森芽精靈",
