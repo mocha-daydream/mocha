@@ -2,8 +2,9 @@
 import { Question, ResultData, SpiritType } from './types.ts';
 
 /**
- * 修正圖片路徑：
- * 系統會自動將上傳的圖片轉為 .png 格式。
+ * 圖片資源對應說明：
+ * 即使您上傳的是 .jpg，系統會自動轉換為 .png。
+ * 格式統一為 input_file_N.png (N 從 0 開始)
  */
 export const SPIRIT_ASSETS = {
   grass: 'input_file_0.png', // 綠色森精靈
